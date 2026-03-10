@@ -144,10 +144,10 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
 
 .wallet-row{display:flex;align-items:flex-start;gap:.75rem;}
 
-.wallet-stack-wrap{flex:1;position:relative;}
+.wallet-stack-wrap{flex:1;position:relative;padding-bottom:160px;margin-bottom:-160px;}
 .wallet-stack{
   position:relative;
-  overflow:hidden;
+  overflow:visible;
   transition:height .55s cubic-bezier(.76,0,.24,1);
   cursor:pointer;
 }
@@ -196,11 +196,15 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
   border-radius:0 0 14px 14px;
 }
 .wcard-wrap.expanded .wcard-info{
-  max-height:120px;
+  max-height:140px;
   opacity:1;
 }
 .wcard-wrap.expanded .wcard{
   border-radius:16px 16px 0 0;
+}
+/* push-down: cards below an expanded card get offset */
+.wcard-wrap.push-down{
+  transition:top .45s cubic-bezier(.76,0,.24,1) !important;
 }
 .wcard-info-inner{
   padding:.85rem 1.1rem .9rem;
@@ -428,12 +432,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
     <!-- Act 2 phone -->
     <div id="intro-phone" style="transform:translateX(300px);">
       <div class="phone-screen">
-        <div id="phone-content" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:1rem;opacity:0;transition:opacity .4s ease;">
-          <img src="https://raw.githubusercontent.com/TonyLin1994code/linket.net/75a3669c1c560c20a888f81a0e0778150daa70d5/logo-linket.png" alt="LINKet" style="width:60%;height:auto;filter:brightness(0) invert(1);">
-          <div style="font-family:'Noto Sans TC',sans-serif;font-size:.55rem;color:rgba(255,255,255,.5);letter-spacing:.14em;text-transform:uppercase;">linket.net</div>
-          <div style="width:40%;height:1px;background:rgba(255,255,255,.12);"></div>
-          <div style="font-family:'Noto Sans TC',sans-serif;font-size:.5rem;color:rgba(255,255,255,.35);letter-spacing:.08em;">Tony Design Studio</div>
-        </div>
+        <img id="phone-content" src="https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/tony-screen.png" alt="Tony Design Studio" style="width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s ease;border-radius:14px;">
       </div>
     </div>
 
@@ -448,7 +447,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
   <!-- HERO MAIN CONTENT (hidden until intro done) -->
   <div class="hero-content" id="hero-content" style="max-width:400px;width:100%;">
     <div class="fade f1" style="margin-bottom:1.4rem;">
-      <img src="https://raw.githubusercontent.com/TonyLin1994code/linket.net/75a3669c1c560c20a888f81a0e0778150daa70d5/logo-linket.png" alt="LINKet" style="height:clamp(28px,6vw,44px);width:auto;display:block;margin:0 auto;">
+      <img src="https://raw.githubusercontent.com/TonyLin1994code/linket.net/75a3669c1c560c20a888f81a0e0778150daa70d5/logo-linket.png" alt="LINKet" style="height:clamp(140px,28vw,220px);width:auto;display:block;margin:0 auto;">
     </div>
     <div class="pill fade f1" style="animation-delay:.18s;">品牌入口 × 數位連結 × 合作起點</div>
     <h1 class="fade f2">不只是數位名片<br>是你的<em>品牌入口</em>與合作起點</h1>
@@ -659,6 +658,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
   </div>
 
   <div class="case-more">以及更多品牌正在使用 LINKet<br>涵蓋店家、設計工作室、個人品牌、健康產業、金融服務、教育</div>
+  <div style="height:160px;"></div>
 </section>
 
 <div class="divider"></div>
@@ -776,7 +776,7 @@ function introAnimate() {
     tony.style.transform = 'translateY(-30px) scale(1)';
     mumu.style.transform = 'translateY(20px) scale(.97)';
     sake.style.transform = 'translateY(70px) scale(.94)';
-  }, 1800);
+  }, 2800);
 
   // ACT 1c (1200ms): Tony flies up center, others sink + fade
   setTimeout(function() {
@@ -791,14 +791,14 @@ function introAnimate() {
     sake.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1), opacity .4s ease';
     sake.style.transform = 'translateY(200px) scale(.85)';
     sake.style.opacity = '0';
-  }, 2400);
+  }, 3400);
 
   // ACT 2a (1900ms): Phone slides in from right
   setTimeout(function() {
     phone.style.transition = 'transform .55s cubic-bezier(.34,1.3,.64,1), opacity .4s ease';
     phone.style.opacity = '1';
     phone.style.transform = 'translateX(140px)';
-  }, 3200);
+  }, 4200);
 
   // ACT 2b (2500ms): NFC pulse ring appears between card and phone
   setTimeout(function() {
@@ -815,7 +815,7 @@ function introAnimate() {
       ring2.style.animation = 'nfcPulse2 .8s ease-out forwards';
       document.getElementById('intro-stage').appendChild(ring2);
     }, 150);
-  }, 3900);
+  }, 4900);
 
   // ACT 2c (2700ms): NFC notification pill drops in
   setTimeout(function() {
@@ -823,7 +823,7 @@ function introAnimate() {
     notif.style.opacity = '1';
     notif.style.transform = 'translateY(0)';
     notif.style.top = '22%';
-  }, 4100);
+  }, 5100);
 
   // ACT 2d (3100ms): Tony card slides away right, phone moves center
   setTimeout(function() {
@@ -836,32 +836,32 @@ function introAnimate() {
 
     phone.style.transition = 'transform .6s cubic-bezier(.76,0,.24,1)';
     phone.style.transform = 'translateX(0) scale(1.03)';
-  }, 4500);
+  }, 5500);
 
   // ACT 2e (3700ms): Phone screen lights up with brand page
   setTimeout(function() {
     phone.style.transition = 'transform .3s ease';
     phone.style.transform = 'translateX(0) scale(1)';
     if (pContent) pContent.style.opacity = '1';
-  }, 5100);
+  }, 6100);
 
   // ACT 3 (4500ms): Phone flies up, stage fades, hero content appears
   setTimeout(function() {
     phone.style.transition = 'transform .6s cubic-bezier(.4,0,.2,1), opacity .45s ease';
     phone.style.transform = 'translateY(-400px) scale(.9)';
     phone.style.opacity = '0';
-  }, 5900);
+  }, 6900);
 
   setTimeout(function() {
     stage.style.transition = 'opacity .4s ease';
     stage.style.opacity = '0';
     stage.style.pointerEvents = 'none';
     heroContent.classList.add('visible');
-  }, 6400);
+  }, 7400);
 
   setTimeout(function() {
     stage.style.display = 'none';
-  }, 7000);
+  }, 8000);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -965,11 +965,41 @@ function buildWallet(cfg) {
       el.addEventListener('click', function(e) {
         if (!cfg.isOpen) return;
         var isExpanded = wrap.classList.contains('expanded');
-        // collapse all others
+
+        // collapse all, remove push-down from all
         stack.querySelectorAll('.wcard-wrap.expanded').forEach(function(w){
           w.classList.remove('expanded');
         });
-        if (!isExpanded) wrap.classList.add('expanded');
+        stack.querySelectorAll('.wcard-wrap.push-down').forEach(function(w){
+          w.classList.remove('push-down');
+        });
+        // reset pushed top values
+        stack.querySelectorAll('.wcard-wrap').forEach(function(w, wi) {
+          w.style.top = (cfg.isOpen ? wi * (CARD_H + GAP) : wi * PEEK) + 'px';
+        });
+
+        if (!isExpanded) {
+          wrap.classList.add('expanded');
+          // DRAWER_H: estimated height of info drawer
+          var DRAWER_H = 108;
+          // push all subsequent wraps down by DRAWER_H
+          var wraps = stack.querySelectorAll('.wcard-wrap');
+          var found = false;
+          wraps.forEach(function(w, wi) {
+            if (w === wrap) { found = true; return; }
+            if (found) {
+              w.classList.add('push-down');
+              var currentTop = cfg.isOpen ? wi * (CARD_H + GAP) : wi * PEEK;
+              w.style.top = (currentTop + DRAWER_H) + 'px';
+            }
+          });
+          // also grow the stack height so last drawer isn't clipped by section below
+          var isLast = wrap === stack.querySelectorAll('.wcard-wrap')[cfg.cards.length - 1];
+          if (isLast) {
+            var curH = parseInt(stack.style.height) || 0;
+            stack.style.height = (curH + DRAWER_H) + 'px';
+          }
+        }
       });
 
       // also toggle on tap for mobile
