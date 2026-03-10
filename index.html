@@ -195,16 +195,9 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
   border-top:none;
   border-radius:0 0 14px 14px;
 }
-.wcard-wrap.expanded .wcard-info{
+.wcard-info.visible{
   max-height:140px;
   opacity:1;
-}
-.wcard-wrap.expanded .wcard{
-  border-radius:16px 16px 0 0;
-}
-/* push-down: cards below an expanded card get offset */
-.wcard-wrap.push-down{
-  transition:top .45s cubic-bezier(.76,0,.24,1) !important;
 }
 .wcard-info-inner{
   padding:.85rem 1.1rem .9rem;
@@ -644,14 +637,14 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
     </div>
     <div class="wallet-row">
       <div class="wallet-stack-wrap">
-        <div class="wallet-stack" id="wallet-stack" onclick="walletToggle(event)">
+        <div class="wallet-stack" id="wallet-stack">
           <div class="wallet-tap-hint" id="wallet-tap-hint">
             <div class="wallet-tap-badge">點一下展開所有品牌</div>
           </div>
         </div>
       </div>
       <div class="wallet-ctrl">
-        <div class="wallet-ctrl-btn" id="wallet-ctrl-btn" onclick="walletToggle(null)" title="展開／收合">▲</div>
+        <div class="wallet-ctrl-btn" id="wallet-ctrl-btn" onclick="walletToggle()" title="展開／收合">▲</div>
         <div class="wallet-ctrl-label" id="wallet-ctrl-label">展開</div>
       </div>
     </div>
@@ -893,183 +886,184 @@ var LIGHT_CARDS = [
   {brand:'眉溪園藝農場', desc:'在地農場品牌，整合聯絡方式與品牌故事的數位入口。', url:'linket.net/meixi-horticulture-farm', plan:'Light', color:'wc-l5'},
 ];
 
-var CARD_H = 148;
-var PEEK   = 18;
-var GAP    = 12;
+var CARD_H  = 148;
+var PEEK    = 18;
+var GAP     = 12;
+var DRAWER_H = 120;
+var EASE    = 'cubic-bezier(.76,0,.24,1)';
 
-/* ── shared render function ── */
-function buildWallet(cfg) {
-  var stack = document.getElementById(cfg.stackId);
+/* single source of truth */
+var wallets = {
+  cases: { open: false, tab: 'plus', expanded: -1 },
+  hero:  { open: false, tab: 'plus', expanded: -1 },
+};
+
+/* ── render ── */
+function renderWallet(id, animate) {
+  var state  = wallets[id];
+  var stackId = id === 'cases' ? 'wallet-stack'     : 'hero-wallet-stack';
+  var hintId  = id === 'cases' ? 'wallet-tap-hint'  : 'hero-wallet-hint';
+  var btnId   = id === 'cases' ? 'wallet-ctrl-btn'  : 'hero-ctrl-btn';
+  var lblId   = id === 'cases' ? null                : 'hero-ctrl-label';
+  var cards   = state.tab === 'plus' ? PLUS_CARDS : LIGHT_CARDS;
+  var n       = cards.length;
+
+  var stack = document.getElementById(stackId);
   if (!stack) return;
-  var n = cfg.cards.length;
 
-  var totalH = cfg.isOpen
-    ? n * CARD_H + (n-1) * GAP
-    : CARD_H + (n-1) * PEEK;
+  var baseH  = n * CARD_H + (n - 1) * GAP;
+  var totalH = state.open
+    ? baseH + (state.expanded >= 0 ? DRAWER_H : 0)
+    : CARD_H + (n - 1) * PEEK;
 
-  stack.style.height = totalH + 'px';
-  stack.classList.toggle('open', cfg.isOpen);
+  /* animate height */
+  stack.style.transition = animate ? 'height .55s ' + EASE : 'none';
+  stack.style.height     = totalH + 'px';
+  stack.classList.toggle('open', state.open);
 
-  var hint = document.getElementById(cfg.hintId);
-  if (hint) hint.classList.toggle('hidden', cfg.isOpen);
+  /* hint / ctrl */
+  var hint = document.getElementById(hintId);
+  if (hint) hint.classList.toggle('hidden', state.open);
+  var btn = document.getElementById(btnId);
+  if (btn) btn.textContent = state.open ? '▲' : '▼';
+  var lbl = document.getElementById(lblId);
+  if (lbl) lbl.textContent = state.open ? '收合' : '展開';
 
-  var btn = document.getElementById(cfg.btnId);
-  var lbl = document.getElementById(cfg.lblId);
-  if (btn) btn.textContent = cfg.isOpen ? '▲' : '▼';
-  if (lbl) lbl.textContent = cfg.isOpen ? '收合' : '展開';
+  /* ── remove stale cards ── */
+  stack.querySelectorAll('.wcard-wrap').forEach(function(el) { el.remove(); });
 
-  // Remove old card wraps
-  stack.querySelectorAll('.wcard-wrap').forEach(function(el){ el.remove(); });
-
+  /* ── build cards ── */
   for (var i = 0; i < n; i++) {
-    (function(idx){
-      var c = cfg.cards[idx];
+    (function(idx) {
+      var c = cards[idx];
+      var isExpanded = state.open && state.expanded === idx;
 
-      // outer wrap (controls top position)
+      /* top */
+      var topPx = state.open
+        ? idx * (CARD_H + GAP) + (state.expanded >= 0 && idx > state.expanded ? DRAWER_H : 0)
+        : idx * PEEK;
+
+      /* wrap — handles top-position animation */
       var wrap = document.createElement('div');
       wrap.className = 'wcard-wrap';
-      wrap.style.position = 'absolute';
-      wrap.style.left = '0';
-      wrap.style.right = '0';
-      wrap.style.zIndex = n - idx;
-      wrap.style.top = (cfg.isOpen ? idx * (CARD_H + GAP) : idx * PEEK) + 'px';
-      wrap.style.transition = 'top .55s cubic-bezier(.76,0,.24,1)';
+      wrap.style.position   = 'absolute';
+      wrap.style.left       = '0';
+      wrap.style.right      = '0';
+      wrap.style.zIndex     = n - idx;
+      wrap.style.transition = animate ? 'top .55s ' + EASE : 'none';
+      wrap.style.top        = topPx + 'px';
 
-      // card (the image face)
+      /* card face */
       var el = document.createElement('div');
-      el.className = 'wcard ' + c.color;
-      el.style.height = CARD_H + 'px';
-      el.style.transform = cfg.isOpen ? 'none' : 'scale(' + (1 - idx * 0.015) + ')';
-      el.style.boxShadow = cfg.isOpen
-        ? '0 8px 28px rgba(0,0,0,.5)'
-        : '0 4px 16px rgba(0,0,0,.5)';
-      // No inner content — pure image via CSS background
+      el.className  = 'wcard ' + c.color;
+      el.style.height       = CARD_H + 'px';
+      el.style.borderRadius = isExpanded ? '16px 16px 0 0' : '16px';
+      el.style.transform    = (state.open || idx === 0) ? 'none' : 'scale(' + (1 - idx * 0.015) + ')';
+      el.style.boxShadow    = state.open ? '0 8px 28px rgba(0,0,0,.5)' : '0 4px 16px rgba(0,0,0,.5)';
+      el.style.cursor       = 'pointer';
+      el.style.transition   = animate
+        ? 'transform .55s ' + EASE + ', border-radius .3s ease, box-shadow .3s ease'
+        : 'none';
 
-      // info drawer (hidden by default, expands on click)
+      /* drawer */
       var info = document.createElement('div');
       info.className = 'wcard-info';
+      /* trigger CSS transition: set to visible after paint */
       info.innerHTML =
         '<div class="wcard-info-inner">' +
           '<div class="wcard-info-text">' +
             '<div class="wcard-brand">' + c.brand + '</div>' +
-            '<div class="wcard-desc">' + c.desc + '</div>' +
-            '<div class="wcard-url">' + c.url + '</div>' +
+            '<div class="wcard-desc">'  + c.desc  + '</div>' +
+            '<div class="wcard-url">'   + c.url   + '</div>' +
           '</div>' +
-          '<a class="wcard-link" href="https://' + c.url + '" target="_blank" onclick="event.stopPropagation()">查看頁面 →</a>' +
+          '<a class="wcard-link" href="https://' + c.url + '" target="_blank">查看頁面 →</a>' +
         '</div>';
 
       wrap.appendChild(el);
       wrap.appendChild(info);
+      stack.appendChild(wrap);
 
-      // click on card toggles drawer (only when stack is open)
-      el.addEventListener('click', function(e) {
-        if (!cfg.isOpen) return;
-        var isExpanded = wrap.classList.contains('expanded');
-
-        // collapse all, remove push-down from all
-        stack.querySelectorAll('.wcard-wrap.expanded').forEach(function(w){
-          w.classList.remove('expanded');
-        });
-        stack.querySelectorAll('.wcard-wrap.push-down').forEach(function(w){
-          w.classList.remove('push-down');
-        });
-        // reset pushed top values
-        stack.querySelectorAll('.wcard-wrap').forEach(function(w, wi) {
-          w.style.top = (cfg.isOpen ? wi * (CARD_H + GAP) : wi * PEEK) + 'px';
-        });
-
-        if (!isExpanded) {
-          wrap.classList.add('expanded');
-          // DRAWER_H: estimated height of info drawer
-          var DRAWER_H = 108;
-          // push all subsequent wraps down by DRAWER_H
-          var wraps = stack.querySelectorAll('.wcard-wrap');
-          var found = false;
-          wraps.forEach(function(w, wi) {
-            if (w === wrap) { found = true; return; }
-            if (found) {
-              w.classList.add('push-down');
-              var currentTop = cfg.isOpen ? wi * (CARD_H + GAP) : wi * PEEK;
-              w.style.top = (currentTop + DRAWER_H) + 'px';
-            }
+      /* open drawer with rAF so CSS transition fires */
+      if (isExpanded) {
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            info.classList.add('visible');
           });
-          // also grow the stack height so last drawer isn't clipped by section below
-          var isLast = wrap === stack.querySelectorAll('.wcard-wrap')[cfg.cards.length - 1];
-          if (isLast) {
-            var curH = parseInt(stack.style.height) || 0;
-            stack.style.height = (curH + DRAWER_H) + 'px';
-          }
+        });
+      }
+
+      /* ── click on card face ── */
+      el.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (!wallets[id].open) {
+          /* collapsed → open the wallet first */
+          wallets[id].open     = true;
+          wallets[id].expanded = -1;
+          renderWallet(id, true);
+        } else {
+          /* already open → toggle this card's drawer */
+          wallets[id].expanded = (wallets[id].expanded === idx) ? -1 : idx;
+          renderWallet(id, true);
         }
       });
 
-      // also toggle on tap for mobile
-      el.addEventListener('touchend', function(e) {
-        e.preventDefault();
-        el.click();
-      });
-
-      stack.appendChild(wrap);
     })(i);
   }
 }
 
-/* ── Cases section wallet ── */
-var casesTab = 'plus';
-var casesOpen = false;
-
+/* ── public API ── */
 function switchTab(tab) {
-  casesTab = tab;
-  casesOpen = false;
-  document.querySelectorAll('#wallet-stack').forEach(function(){});
-  var tabs = document.querySelectorAll('.wallet-tabs:not(#hero-wallet-tabs) .wallet-tab');
-  tabs.forEach(function(t,i){ t.classList.toggle('active',(i===0&&tab==='plus')||(i===1&&tab==='light')); });
-  renderCasesWallet();
-}
-function renderCasesWallet() {
-  buildWallet({
-    stackId:'wallet-stack', hintId:'wallet-tap-hint',
-    btnId:'wallet-ctrl-btn', lblId:null,
-    cards: casesTab==='plus' ? PLUS_CARDS : LIGHT_CARDS,
-    isOpen: casesOpen
+  wallets.cases.tab = tab;
+  wallets.cases.open = false;
+  wallets.cases.expanded = -1;
+  document.querySelectorAll('.wallet-tabs:not(#hero-wallet-tabs) .wallet-tab').forEach(function(t, i) {
+    t.classList.toggle('active', (i === 0 && tab === 'plus') || (i === 1 && tab === 'light'));
   });
-  var lbl = document.getElementById('wallet-ctrl-btn');
-}
-function walletToggle(e) {
-  if (e && e.target && e.target.closest && e.target.closest('a')) return;
-  if (e && casesOpen) return;
-  casesOpen = !casesOpen;
-  renderCasesWallet();
+  renderWallet('cases', false);
 }
 
-/* ── Hero wallet ── */
-var heroTab = 'plus';
-var heroOpen = false;
+function walletToggle() {
+  wallets.cases.open     = !wallets.cases.open;
+  wallets.cases.expanded = -1;
+  renderWallet('cases', true);
+}
 
 function heroSwitchTab(tab) {
-  heroTab = tab;
-  heroOpen = false;
-  var tabs = document.querySelectorAll('#hero-wallet-tabs .wallet-tab');
-  tabs.forEach(function(t,i){ t.classList.toggle('active',(i===0&&tab==='plus')||(i===1&&tab==='light')); });
-  renderHeroWallet();
-}
-function renderHeroWallet() {
-  buildWallet({
-    stackId:'hero-wallet-stack', hintId:'hero-wallet-hint',
-    btnId:'hero-ctrl-btn', lblId:'hero-ctrl-label',
-    cards: heroTab==='plus' ? PLUS_CARDS : LIGHT_CARDS,
-    isOpen: heroOpen
+  wallets.hero.tab = tab;
+  wallets.hero.open = false;
+  wallets.hero.expanded = -1;
+  document.querySelectorAll('#hero-wallet-tabs .wallet-tab').forEach(function(t, i) {
+    t.classList.toggle('active', (i === 0 && tab === 'plus') || (i === 1 && tab === 'light'));
   });
-}
-function heroWalletToggle(e) {
-  if (e && e.target && e.target.closest && e.target.closest('a')) return;
-  if (e && heroOpen) return;
-  heroOpen = !heroOpen;
-  renderHeroWallet();
+  renderWallet('hero', false);
 }
 
+function heroWalletToggle() {
+  wallets.hero.open     = !wallets.hero.open;
+  wallets.hero.expanded = -1;
+  renderWallet('hero', true);
+}
+
+/* ── init ── */
 document.addEventListener('DOMContentLoaded', function() {
-  renderCasesWallet();
-  renderHeroWallet();
+  var stackEl = document.getElementById('wallet-stack');
+  if (stackEl) {
+    stackEl.addEventListener('click', function(e) {
+      if (e.target.closest('a'))      return;
+      if (e.target.closest('.wcard')) return;
+      if (!wallets.cases.open) walletToggle();
+    });
+  }
+  var heroEl = document.getElementById('hero-wallet-stack');
+  if (heroEl) {
+    heroEl.addEventListener('click', function(e) {
+      if (e.target.closest('a'))      return;
+      if (e.target.closest('.wcard')) return;
+      if (!wallets.hero.open) heroWalletToggle();
+    });
+  }
+  renderWallet('cases', false);
+  renderWallet('hero',  false);
 });
 </script>
 
