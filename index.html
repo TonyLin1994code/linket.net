@@ -170,37 +170,66 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
   backdrop-filter:blur(6px);
 }
 
-.wcard{
+.wcard-wrap{
   position:absolute;left:0;right:0;
+  transition:top .55s cubic-bezier(.76,0,.24,1);
+}
+.wcard{
   border-radius:16px;overflow:hidden;
   transition:transform .55s cubic-bezier(.76,0,.24,1),
-             top .55s cubic-bezier(.76,0,.24,1),
              box-shadow .3s ease,
              opacity .3s ease;
-  will-change:transform,top;
+  will-change:transform;
+  background-size:cover;
+  background-position:center top;
+  cursor:pointer;
 }
-.wcard-inner{padding:1.2rem 1.3rem 1rem;height:100%;display:flex;flex-direction:column;justify-content:space-between;}
-.wcard-badge{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.4rem;}
-.wcard-brand{font-family:'Noto Sans TC',sans-serif;font-size:1rem;font-weight:700;color:#fff;letter-spacing:.07em;margin-bottom:.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.wcard-desc{font-size:.78rem;color:rgba(255,255,255,.6);line-height:1.65;letter-spacing:.03em;}
-.wcard-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:.6rem;}
-.wcard-url{font-size:.6rem;color:rgba(255,255,255,.28);letter-spacing:.04em;}
-.wcard-link{font-size:.7rem;color:var(--blue2);text-decoration:none;border:1px solid rgba(59,142,255,.3);border-radius:20px;padding:.25rem .75rem;letter-spacing:.07em;transition:all .2s;flex-shrink:0;}
+/* info drawer slides out below card */
+.wcard-info{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .45s cubic-bezier(.76,0,.24,1), opacity .35s ease;
+  opacity:0;
+  background:var(--bg3);
+  border:1px solid var(--b2);
+  border-top:none;
+  border-radius:0 0 14px 14px;
+}
+.wcard-wrap.expanded .wcard-info{
+  max-height:120px;
+  opacity:1;
+}
+.wcard-wrap.expanded .wcard{
+  border-radius:16px 16px 0 0;
+}
+.wcard-info-inner{
+  padding:.85rem 1.1rem .9rem;
+  display:flex;align-items:center;justify-content:space-between;gap:.8rem;
+}
+.wcard-info-text{}
+.wcard-brand{font-family:'Noto Sans TC',sans-serif;font-size:.88rem;font-weight:700;color:#fff;letter-spacing:.06em;margin-bottom:.2rem;}
+.wcard-desc{font-size:.72rem;color:var(--muted);line-height:1.6;letter-spacing:.03em;}
+.wcard-url{font-size:.6rem;color:var(--muted2);letter-spacing:.04em;margin-top:.2rem;}
+.wcard-link{
+  flex-shrink:0;font-size:.7rem;color:var(--blue2);
+  text-decoration:none;border:1px solid rgba(59,142,255,.3);
+  border-radius:20px;padding:.3rem .85rem;letter-spacing:.07em;
+  transition:all .2s;white-space:nowrap;
+}
 .wcard-link:hover{background:rgba(59,142,255,.15);border-color:rgba(59,142,255,.6);}
-.wcard-plan{font-size:.6rem;letter-spacing:.14em;padding:.18rem .5rem;border-radius:4px;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.5);}
 
-.wc-0{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Atony-thumb.jpg") center/cover no-repeat;}
-.wc-1{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Amumu-thumb.jpg") center/cover no-repeat;}
-.wc-2{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Azouke-thumb.jpg") center/cover no-repeat;}
-.wc-3{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Afeisrealm-thumb.jpg") center/cover no-repeat;}
-.wc-4{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Aasmrt-thumb.jpg") center/cover no-repeat;}
-.wc-5{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Alanjue-thumb.png") center/cover no-repeat;}
-.wc-l0{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Abella-spa-thumb.png") center/cover no-repeat;}
-.wc-l1{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Amu-ai-cake-thumb.png") center/cover no-repeat;}
-.wc-l2{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Ahills-valleys-thumb.png") center/cover no-repeat;}
-.wc-l3{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Amikijiabeauty-thumb.jpg") center/cover no-repeat;}
-.wc-l4{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Aaeter-design-thumb.jpg") center/cover no-repeat;}
-.wc-l5{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Ameixi-horticulture-farm-thumb.jpg") center/cover no-repeat;}
+.wc-0{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Atony-thumb.jpg") center/cover no-repeat;}
+.wc-1{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Amumu-thumb.jpg") center/cover no-repeat;}
+.wc-2{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Azouke-thumb.jpg") center/cover no-repeat;}
+.wc-3{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Afeisrealm-thumb.jpg") center/cover no-repeat;}
+.wc-4{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Aasmrt-thumb.jpg") center/cover no-repeat;}
+.wc-5{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Alanjue-thumb.png") center/cover no-repeat;}
+.wc-l0{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Abella-spa-thumb.png") center/cover no-repeat;}
+.wc-l1{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Amu-ai-cake-thumb.png") center/cover no-repeat;}
+.wc-l2{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Ahills-valleys-thumb.png") center/cover no-repeat;}
+.wc-l3{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Amikijiabeauty-thumb.jpg") center/cover no-repeat;}
+.wc-l4{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Aaeter-design-thumb.jpg") center/cover no-repeat;}
+.wc-l5{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),url("https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Ameixi-horticulture-farm-thumb.jpg") center/cover no-repeat;}
 
 /* side collapse button */
 .wallet-ctrl{
@@ -299,9 +328,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
   will-change:transform,opacity;
   box-shadow:0 12px 40px rgba(0,0,0,.6);
 }
-.intro-card .ic-badge{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.3rem;}
-.intro-card .ic-brand{font-family:'Noto Sans TC',sans-serif;font-size:.95rem;font-weight:700;color:#fff;letter-spacing:.07em;}
-.intro-card .ic-plan{font-size:.58rem;letter-spacing:.12em;padding:.15rem .45rem;border-radius:4px;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);align-self:flex-end;}
+
 
 /* ── ACT 2: PHONE ── */
 #intro-phone{
@@ -394,23 +421,19 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
   <!-- INTRO STAGE -->
   <div id="intro-stage">
     <!-- Act 1 cards -->
-    <div class="intro-card wc-0" id="ic-tony" style="transform:translateY(8px) scale(.98);z-index:3;">
-      <div><div class="ic-badge">LINKet VIP</div><div class="ic-brand">Tony Design Studio</div></div>
-      <div class="ic-plan">VIP</div>
-    </div>
-    <div class="intro-card wc-1" id="ic-mumu" style="transform:translateY(16px) scale(.965);z-index:2;">
-      <div><div class="ic-badge">LINKet VIP</div><div class="ic-brand">MuMu Cafe</div></div>
-      <div class="ic-plan">VIP</div>
-    </div>
-    <div class="intro-card wc-5" id="ic-sake" style="transform:translateY(24px) scale(.95);z-index:1;">
-      <div><div class="ic-badge">LINKet Plus</div><div class="ic-brand">嵐爵私選</div></div>
-      <div class="ic-plan">Plus</div>
-    </div>
+    <div class="intro-card wc-0" id="ic-tony" style="transform:translateY(8px) scale(.98);z-index:3;"></div>
+    <div class="intro-card wc-1" id="ic-mumu" style="transform:translateY(16px) scale(.965);z-index:2;"></div>
+    <div class="intro-card wc-5" id="ic-sake" style="transform:translateY(24px) scale(.95);z-index:1;"></div>
 
     <!-- Act 2 phone -->
     <div id="intro-phone" style="transform:translateX(300px);">
       <div class="phone-screen">
-        <img id="phone-content" src="https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/tony-screen.png" alt="Tony Design Studio" style="width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .4s ease;border-radius:14px;">
+        <div id="phone-content" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:1rem;opacity:0;transition:opacity .4s ease;">
+          <img src="https://raw.githubusercontent.com/TonyLin1994code/linket.net/75a3669c1c560c20a888f81a0e0778150daa70d5/logo-linket.png" alt="LINKet" style="width:60%;height:auto;filter:brightness(0) invert(1);">
+          <div style="font-family:'Noto Sans TC',sans-serif;font-size:.55rem;color:rgba(255,255,255,.5);letter-spacing:.14em;text-transform:uppercase;">linket.net</div>
+          <div style="width:40%;height:1px;background:rgba(255,255,255,.12);"></div>
+          <div style="font-family:'Noto Sans TC',sans-serif;font-size:.5rem;color:rgba(255,255,255,.35);letter-spacing:.08em;">Tony Design Studio</div>
+        </div>
       </div>
     </div>
 
@@ -424,7 +447,10 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
 
   <!-- HERO MAIN CONTENT (hidden until intro done) -->
   <div class="hero-content" id="hero-content" style="max-width:400px;width:100%;">
-    <div class="pill fade f1">品牌入口 × 數位連結 × 合作起點</div>
+    <div class="fade f1" style="margin-bottom:1.4rem;">
+      <img src="https://raw.githubusercontent.com/TonyLin1994code/linket.net/75a3669c1c560c20a888f81a0e0778150daa70d5/logo-linket.png" alt="LINKet" style="height:clamp(28px,6vw,44px);width:auto;display:block;margin:0 auto;">
+    </div>
+    <div class="pill fade f1" style="animation-delay:.18s;">品牌入口 × 數位連結 × 合作起點</div>
     <h1 class="fade f2">不只是數位名片<br>是你的<em>品牌入口</em>與合作起點</h1>
     <p class="hero-sub fade f3">LINKet 透過 NFC 數位名片與品牌 Landing Page，<br>幫助品牌、店家與創作者<br>更清楚地被理解、被聯絡，也更容易展開合作。</p>
     <div class="stat-row fade f4">
@@ -696,13 +722,30 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
 </div>
 
 <div class="divider"></div>
-<footer class="footer">Design by LINKet · linket.net</footer>
+<footer class="footer">
+  <img src="https://raw.githubusercontent.com/TonyLin1994code/linket.net/75a3669c1c560c20a888f81a0e0778150daa70d5/logo-linket.png" alt="LINKet" style="height:22px;width:auto;opacity:.5;display:block;margin:0 auto .6rem;">
+  <div>Design by LINKet · linket.net</div>
+</footer>
 
 
 <script>
 /* ═══════════════════════════════
    INTRO ANIMATION SEQUENCER
 ═══════════════════════════════ */
+function preloadImages(urls, callback) {
+  var loaded = 0;
+  var total = urls.length;
+  if (total === 0) { callback(); return; }
+  urls.forEach(function(url) {
+    var img = new Image();
+    img.onload = img.onerror = function() {
+      loaded++;
+      if (loaded >= total) callback();
+    };
+    img.src = url;
+  });
+}
+
 function introAnimate() {
   var tony  = document.getElementById('ic-tony');
   var mumu  = document.getElementById('ic-mumu');
@@ -733,7 +776,7 @@ function introAnimate() {
     tony.style.transform = 'translateY(-30px) scale(1)';
     mumu.style.transform = 'translateY(20px) scale(.97)';
     sake.style.transform = 'translateY(70px) scale(.94)';
-  }, 600);
+  }, 1800);
 
   // ACT 1c (1200ms): Tony flies up center, others sink + fade
   setTimeout(function() {
@@ -748,14 +791,14 @@ function introAnimate() {
     sake.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1), opacity .4s ease';
     sake.style.transform = 'translateY(200px) scale(.85)';
     sake.style.opacity = '0';
-  }, 1200);
+  }, 2400);
 
   // ACT 2a (1900ms): Phone slides in from right
   setTimeout(function() {
     phone.style.transition = 'transform .55s cubic-bezier(.34,1.3,.64,1), opacity .4s ease';
     phone.style.opacity = '1';
     phone.style.transform = 'translateX(140px)';
-  }, 1900);
+  }, 3200);
 
   // ACT 2b (2500ms): NFC pulse ring appears between card and phone
   setTimeout(function() {
@@ -772,7 +815,7 @@ function introAnimate() {
       ring2.style.animation = 'nfcPulse2 .8s ease-out forwards';
       document.getElementById('intro-stage').appendChild(ring2);
     }, 150);
-  }, 2500);
+  }, 3900);
 
   // ACT 2c (2700ms): NFC notification pill drops in
   setTimeout(function() {
@@ -780,7 +823,7 @@ function introAnimate() {
     notif.style.opacity = '1';
     notif.style.transform = 'translateY(0)';
     notif.style.top = '22%';
-  }, 2700);
+  }, 4100);
 
   // ACT 2d (3100ms): Tony card slides away right, phone moves center
   setTimeout(function() {
@@ -793,32 +836,32 @@ function introAnimate() {
 
     phone.style.transition = 'transform .6s cubic-bezier(.76,0,.24,1)';
     phone.style.transform = 'translateX(0) scale(1.03)';
-  }, 3100);
+  }, 4500);
 
   // ACT 2e (3700ms): Phone screen lights up with brand page
   setTimeout(function() {
     phone.style.transition = 'transform .3s ease';
     phone.style.transform = 'translateX(0) scale(1)';
     if (pContent) pContent.style.opacity = '1';
-  }, 3700);
+  }, 5100);
 
   // ACT 3 (4500ms): Phone flies up, stage fades, hero content appears
   setTimeout(function() {
     phone.style.transition = 'transform .6s cubic-bezier(.4,0,.2,1), opacity .45s ease';
     phone.style.transform = 'translateY(-400px) scale(.9)';
     phone.style.opacity = '0';
-  }, 4500);
+  }, 5900);
 
   setTimeout(function() {
     stage.style.transition = 'opacity .4s ease';
     stage.style.opacity = '0';
     stage.style.pointerEvents = 'none';
     heroContent.classList.add('visible');
-  }, 5000);
+  }, 6400);
 
   setTimeout(function() {
     stage.style.display = 'none';
-  }, 5600);
+  }, 7000);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -826,7 +869,9 @@ document.addEventListener('DOMContentLoaded', function() {
   var notif = document.getElementById('nfc-notif');
   if (notif) { notif.style.top = '5%'; notif.style.transform = 'translateY(-20px)'; }
 
-  introAnimate();
+  preloadImages(['https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Atony-thumb.jpg', 'https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Amumu-thumb.jpg', 'https://raw.githubusercontent.com/TonyLin1994code/linket.net/2141fe748e729d58a8357a52623bfefb87ea7b94/cases%3Alanjue-thumb.png'], function() {
+    introAnimate();
+  });
 });
 </script>
 
@@ -854,14 +899,15 @@ var GAP    = 12;
 
 /* ── shared render function ── */
 function buildWallet(cfg) {
-  // cfg: {stackId, hintId, btnId, lblId, cards, isOpen}
   var stack = document.getElementById(cfg.stackId);
   if (!stack) return;
   var n = cfg.cards.length;
 
-  stack.style.height = (cfg.isOpen
+  var totalH = cfg.isOpen
     ? n * CARD_H + (n-1) * GAP
-    : CARD_H + (n-1) * PEEK) + 'px';
+    : CARD_H + (n-1) * PEEK;
+
+  stack.style.height = totalH + 'px';
   stack.classList.toggle('open', cfg.isOpen);
 
   var hint = document.getElementById(cfg.hintId);
@@ -872,40 +918,67 @@ function buildWallet(cfg) {
   if (btn) btn.textContent = cfg.isOpen ? '▲' : '▼';
   if (lbl) lbl.textContent = cfg.isOpen ? '收合' : '展開';
 
-  stack.querySelectorAll('.wcard').forEach(function(el){ el.remove(); });
+  // Remove old card wraps
+  stack.querySelectorAll('.wcard-wrap').forEach(function(el){ el.remove(); });
 
   for (var i = 0; i < n; i++) {
     (function(idx){
       var c = cfg.cards[idx];
+
+      // outer wrap (controls top position)
+      var wrap = document.createElement('div');
+      wrap.className = 'wcard-wrap';
+      wrap.style.position = 'absolute';
+      wrap.style.left = '0';
+      wrap.style.right = '0';
+      wrap.style.zIndex = n - idx;
+      wrap.style.top = (cfg.isOpen ? idx * (CARD_H + GAP) : idx * PEEK) + 'px';
+      wrap.style.transition = 'top .55s cubic-bezier(.76,0,.24,1)';
+
+      // card (the image face)
       var el = document.createElement('div');
       el.className = 'wcard ' + c.color;
       el.style.height = CARD_H + 'px';
-      el.style.zIndex = n - idx;
-      el.style.transition = 'top .55s cubic-bezier(.76,0,.24,1), transform .55s cubic-bezier(.76,0,.24,1), box-shadow .3s ease, opacity .3s ease';
-      if (cfg.isOpen) {
-        el.style.top = idx * (CARD_H + GAP) + 'px';
-        el.style.transform = 'none';
-        el.style.boxShadow = '0 8px 28px rgba(0,0,0,.5)';
-      } else {
-        el.style.top = idx * PEEK + 'px';
-        el.style.transform = 'scale(' + (1 - idx * 0.015) + ')';
-        el.style.boxShadow = '0 4px 16px rgba(0,0,0,.5)';
-      }
-      el.innerHTML =
-        '<div class="wcard-inner">' +
-          '<div>' +
-            '<div class="wcard-badge">LINKet ' + c.plan + '</div>' +
+      el.style.transform = cfg.isOpen ? 'none' : 'scale(' + (1 - idx * 0.015) + ')';
+      el.style.boxShadow = cfg.isOpen
+        ? '0 8px 28px rgba(0,0,0,.5)'
+        : '0 4px 16px rgba(0,0,0,.5)';
+      // No inner content — pure image via CSS background
+
+      // info drawer (hidden by default, expands on click)
+      var info = document.createElement('div');
+      info.className = 'wcard-info';
+      info.innerHTML =
+        '<div class="wcard-info-inner">' +
+          '<div class="wcard-info-text">' +
             '<div class="wcard-brand">' + c.brand + '</div>' +
             '<div class="wcard-desc">' + c.desc + '</div>' +
-          '</div>' +
-          '<div class="wcard-bottom">' +
             '<div class="wcard-url">' + c.url + '</div>' +
-            (cfg.isOpen
-              ? '<a class="wcard-link" href="https://' + c.url + '" target="_blank" onclick="event.stopPropagation()">查看頁面 →</a>'
-              : '<div class="wcard-plan">' + c.plan + '</div>') +
           '</div>' +
+          '<a class="wcard-link" href="https://' + c.url + '" target="_blank" onclick="event.stopPropagation()">查看頁面 →</a>' +
         '</div>';
-      stack.appendChild(el);
+
+      wrap.appendChild(el);
+      wrap.appendChild(info);
+
+      // click on card toggles drawer (only when stack is open)
+      el.addEventListener('click', function(e) {
+        if (!cfg.isOpen) return;
+        var isExpanded = wrap.classList.contains('expanded');
+        // collapse all others
+        stack.querySelectorAll('.wcard-wrap.expanded').forEach(function(w){
+          w.classList.remove('expanded');
+        });
+        if (!isExpanded) wrap.classList.add('expanded');
+      });
+
+      // also toggle on tap for mobile
+      el.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        el.click();
+      });
+
+      stack.appendChild(wrap);
     })(i);
   }
 }
